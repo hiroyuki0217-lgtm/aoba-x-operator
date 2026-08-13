@@ -36,6 +36,11 @@ button { cursor:pointer; }
 .nav .plus { width:38px; height:38px; border-radius:50%; background:var(--ink); color:#fff; font-size:25px; line-height:20px; margin-top:-19px; box-shadow:0 3px 11px #10182733; }
 .post { border-left:3px solid var(--blue); }
 .post p { margin:8px 0; font-size:15px; line-height:1.65; white-space:pre-wrap; }
+.daily-plan { border-top:4px solid var(--accent); }
+.daily-draft { white-space:pre-wrap; font-size:17px; line-height:1.75; margin:16px 0; color:#17252a; }
+.research-note { margin:10px 0 15px; padding:9px 10px; border-radius:10px; background:#f3f5f1; color:#415146; font-size:12px; line-height:1.55; }
+.research-list { margin:8px 0; padding-left:19px; color:var(--ink); font-size:13px; line-height:1.75; }
+details { border-top:1px solid var(--line); padding-top:11px; margin:12px 0; } details summary { font-size:12px; color:var(--muted); font-weight:800; cursor:pointer; }
 .post-meta { color:var(--muted); font-size:12px; }
 .primary { border:0; border-radius:13px; background:var(--ink); color:#fff; font-weight:800; padding:12px 14px; width:100%; margin-top:10px; }
 .secondary { border:1px solid var(--line); border-radius:13px; background:var(--card); color:var(--ink); font-weight:700; padding:11px 13px; margin-top:10px; }
