@@ -65,4 +65,6 @@ textarea { min-height:105px; resize:vertical; line-height:1.6; }
 .queue-status { display:inline-block; font-size:11px; font-weight:800; border-radius:99px; padding:4px 7px; background:var(--blue); }.queue-status.approval { background:#f7e7b8; }.queue-status.published { background:var(--mint); }
 .segmented { display:flex; gap:5px; background:#eeece7; border-radius:13px; padding:4px; margin:12px 0; }.segmented button { flex:1; border:0; background:transparent; border-radius:9px; padding:8px 4px; font-size:12px; }.segmented button.active { background:var(--card); box-shadow:0 1px 4px #0001; font-weight:800; }
 .callout { border-left:3px solid var(--accent); padding:5px 0 5px 12px; color:#30483d; font-size:13px; line-height:1.6; }
+.prompt-box { background:#f3f5f6; border-radius:14px; padding:13px; font-size:12px; line-height:1.7; white-space:pre-wrap; color:#253248; }
+.prompt-head { display:flex; align-items:center; justify-content:space-between; gap:9px; margin-bottom:9px; }.tiny-button { border:1px solid var(--line); border-radius:9px; background:var(--card); color:var(--ink); padding:6px 8px; font-size:11px; font-weight:800; }
 @media (min-width:700px) { #app { padding-left:28px; padding-right:28px; } .stats { grid-template-columns:repeat(4,1fr); } }
