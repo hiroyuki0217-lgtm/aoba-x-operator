@@ -17,15 +17,27 @@ const completedCount = i => phases[i].tasks.filter((_, t) => state.done[`${i}-${
 const progress = i => Math.round(completedCount(i) / phases[i].tasks.length * 100);
 const unlocked = i => i === 0 || progress(i - 1) >= 80;
 const currentPhase = () => phases[state.phase];
-const visualPrompts = [
+const baseVisualPrompts = [
   { title:'最初の1枚｜帰宅後の鎧がほどける瞬間', reason:'あおばの「仕事では整えている／家では少し力が抜ける」を、一枚で伝えるための基準画像です。', text:'33歳の不動産会社勤務の日本人女性「あおば」。駅から帰宅直後の1Kマンション。濃紺の仕事用ジャケットを脱ぎかけ、低い位置でゆるく結んだダークブラウンの髪、前髪が少し割れている。白・グレー・薄い木目の生活感、室内の暖色の光。営業用ではない、少し疲れて緊張がほどけた自然な表情。過度な演出や性的強調なし、自然なスマホ写真の質感、縦長9:16。', caption:'はじめました。たぶんすぐ消すかも。' },
   { title:'2枚目の候補｜仕事帰りの余白', reason:'仕事の顔だけではない、あおばの生活の続きが見える案です。', text:'33歳の日本人女性「あおば」。夜の1K、黒いパンプスを脱いだ直後、グレーのTシャツに着替え、仕事用バッグを床に置く瞬間。少し乱れたダークブラウンの髪、静かな疲れを残した表情。白・グレー・薄い木目、暖色の室内光、生活感のある自然な縦長写真、9:16、過度な演出や性的強調なし。', caption:'やっと帰宅。今日は思ったより長かった。' }
 ];
+const visualPrompts = [...baseVisualPrompts];
 async function loadLatestRecommendation(){
   try {
     const response = await fetch('./data/latest-state.json', {cache:'no-store'});
     const latest = await response.json();
-    if (Array.isArray(latest.visualPrompts) && latest.visualPrompts.length) visualPrompts.splice(0, visualPrompts.length, ...latest.visualPrompts);
+    if (Array.isArray(latest.visualPrompts) && latest.visualPrompts.length) {
+      // 日次分析の本命を先頭に置きつつ、別案ボタンが1件で止まらないよう基準案も残す。
+      const seen = new Set();
+      const merged = [...latest.visualPrompts, ...baseVisualPrompts].filter(prompt => {
+        const key = `${prompt.title}|${prompt.text}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      visualPrompts.splice(0, visualPrompts.length, ...merged);
+      state.visualVariant %= visualPrompts.length;
+    }
   } catch (_) { /* オフライン時は内蔵案を使う */ }
 }
 function copyText(text){ if(navigator.clipboard?.writeText) navigator.clipboard.writeText(text).catch(()=>fallbackCopy(text)); else fallbackCopy(text); }
