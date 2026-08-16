@@ -30,7 +30,7 @@ function esc(value) {
 
 function page(title, body) {
   return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>
-  :root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;color:#17212b;background:#eef2f4}body{margin:0;padding:18px}main{max-width:720px;margin:2vh auto}.card{background:#fff;border-radius:20px;padding:24px;margin:0 0 16px;box-shadow:0 10px 35px #17212b12}h1{font-size:1.6rem;margin:0 0 8px}h2{font-size:1.2rem}.lead,.small{line-height:1.7;color:#53616d}.small{font-size:.88rem}.ok,.warn{padding:14px 16px;border-radius:12px;background:#eaf7f0;line-height:1.6}.warn{background:#fff1e4}.image{width:100%;border-radius:14px;display:block}label{display:block;margin:14px 0 6px;font-weight:700}input[type=text],input[type=password],select{box-sizing:border-box;width:100%;font-size:16px;padding:12px;border:1px solid #adb7c0;border-radius:10px}button{box-sizing:border-box;width:100%;margin-top:14px;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:750;background:#101820;color:#fff;cursor:pointer}.secondary{background:#e7ecef;color:#17212b}.danger{background:#b42318}.meta{display:grid;grid-template-columns:8em 1fr;gap:8px 12px;line-height:1.5}.meta dt{color:#66727d}.meta dd{margin:0;word-break:break-word}.check{display:flex;gap:10px;align-items:flex-start;line-height:1.5;margin-top:16px}.check input{margin-top:4px}.text{white-space:pre-wrap;line-height:1.75;font-size:1.05rem}.alt{padding:12px;background:#f4f6f7;border-radius:10px;line-height:1.6}.deadline{font-weight:700}.disabled{opacity:.55;pointer-events:none}
+  :root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;color:#17212b;background:#eef2f4}body{margin:0;padding:18px}main{max-width:720px;margin:2vh auto}.card{background:#fff;border-radius:20px;padding:24px;margin:0 0 16px;box-shadow:0 10px 35px #17212b12}h1{font-size:1.6rem;margin:0 0 8px}h2{font-size:1.2rem}.lead,.small{line-height:1.7;color:#53616d}.small{font-size:.88rem}.ok,.warn{padding:14px 16px;border-radius:12px;background:#eaf7f0;line-height:1.6}.warn{background:#fff1e4}.image{width:100%;border-radius:14px;display:block}label{display:block;margin:14px 0 6px;font-weight:700}input[type=text],input[type=password],select,textarea{box-sizing:border-box;width:100%;font:inherit;font-size:16px;padding:12px;border:1px solid #adb7c0;border-radius:10px;background:#fff;color:#17212b}textarea{resize:vertical;line-height:1.65;min-height:9em}.alt-edit{min-height:11em}button{box-sizing:border-box;width:100%;margin-top:14px;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:750;background:#101820;color:#fff;cursor:pointer}.secondary{background:#e7ecef;color:#17212b}.danger{background:#b42318}.meta{display:grid;grid-template-columns:8em 1fr;gap:8px 12px;line-height:1.5}.meta dt{color:#66727d}.meta dd{margin:0;word-break:break-word}.check{display:flex;gap:10px;align-items:flex-start;line-height:1.5;margin-top:16px}.check input{margin-top:4px}.deadline{font-weight:700}.disabled{opacity:.55;pointer-events:none}
   </style></head><body><main>${body}</main></body></html>`;
 }
 
@@ -130,6 +130,16 @@ export function canRequestPublication(post, now = Date.now(), allowEarlyTest = f
   return isDue(post, now) || allowEarlyTest;
 }
 
+export function applyPostEdits(post, text, alt) {
+  const editedText = String(text ?? "").trim();
+  const editedAlt = String(alt ?? "").trim();
+  if (!editedText) throw new Error("本文を入力してください。");
+  if (Array.from(editedText).length > 280) throw new Error("本文は280文字以内にしてください。");
+  if (!editedAlt) throw new Error("ALTを入力してください。");
+  if (Array.from(editedAlt).length > 1000) throw new Error("ALTは1000文字以内にしてください。");
+  return { ...post, text: editedText, alt: editedAlt };
+}
+
 export function isAllowedLocalRequest(headers) {
   const expected = `${OPERATOR_HOST}:${OPERATOR_PORT}`;
   if (headers.host !== expected) return false;
@@ -219,10 +229,11 @@ async function handler(req, res) {
     const earlyTest = !due && EARLY_TEST_MODE;
     const canPublish = canRequestPublication(post, Date.now(), EARLY_TEST_MODE);
     approval = canPublish ? { nonce: randomBytes(32).toString("base64url"), postId: post.id, createdAt: Date.now(), earlyTest } : null;
+    const editableFields = `<label for="post_text">本文（ここで編集できます）</label><textarea id="post_text" name="text" maxlength="280" required>${esc(post.text)}</textarea><p class="small">空欄不可・280文字以内。改行もそのまま投稿されます。</p><label for="post_alt">ALT（ここで編集できます）</label><textarea class="alt-edit" id="post_alt" name="alt" maxlength="1000" required>${esc(post.alt)}</textarea><p class="small">画像の内容を説明する文章です。空欄不可・1000文字以内。</p>`;
     const publishControls = canPublish
-      ? `<form method="post" action="/publish"><input type="hidden" name="nonce" value="${approval.nonce}"><label class="check"><input type="checkbox" name="confirmed" value="yes" required><span>画像・本文・ALT・投稿先を確認し、この内容を実際に公開します。</span></label><label for="phrase">確認のため「投稿する」と入力</label><input id="phrase" name="phrase" type="text" required autocomplete="off"><button class="danger" type="submit">@aoba_dayへ公開する</button></form>`
-      : '<div class="warn"><strong>予定時刻前のため、公開ボタンを止めています。</strong><br>予定時刻以降にもう一度この画面を開いてください。</div>';
-    return sendHtml(res, 200, "最終確認", `<section class="card"><h1>公開前の最終確認</h1><div class="warn"><strong>${earlyTest ? "前倒しの実投稿テストです。この次のボタンで実際にXへ公開されます。" : due ? "この次のボタンで実際にXへ公開されます。" : "いまは内容確認だけできます。"}</strong><br>投稿後は自動では削除できません。</div><dl class="meta"><dt>投稿先</dt><dd><strong>@aoba_day</strong></dd><dt>公開条件</dt><dd class="deadline">${esc(scheduleLabel(post))}${earlyTest ? "（前倒しテスト）" : due ? "" : "（まだ予定時刻前です）"}</dd><dt>カテゴリ</dt><dd>${esc(post.category || post.pillar)}</dd><dt>テーマ</dt><dd>${esc(post.pillar)}／${esc(post.title)}</dd><dt>目的</dt><dd>${esc(post.objective || "未設定")}</dd><dt>検証変数</dt><dd>${esc(post.testVariable || "未設定")}</dd><dt>画像</dt><dd>${Math.round(image.bytes / 1024)}KB・${esc(image.mediaType)}</dd><dt>AI表示</dt><dd>made_with_ai: true</dd></dl></section><section class="card"><img class="image" src="/image?id=${post.id}" alt="${esc(post.alt)}"><h2>本文</h2><p class="text">${esc(post.text)}</p><h2>ALT</h2><p class="alt">${esc(post.alt)}</p>${publishControls}<form method="get" action="/"><button class="secondary" type="submit">戻る</button></form></section>`);
+      ? `<form method="post" action="/publish"><input type="hidden" name="nonce" value="${approval.nonce}">${editableFields}<label class="check"><input type="checkbox" name="confirmed" value="yes" required><span>編集後の本文・ALT、画像、投稿先を確認し、この内容を実際に公開します。</span></label><label for="phrase">確認のため「投稿する」と入力</label><input id="phrase" name="phrase" type="text" required autocomplete="off"><button class="danger" type="submit">@aoba_dayへ公開する</button></form>`
+      : `${editableFields}<div class="warn"><strong>予定時刻前のため、公開ボタンを止めています。</strong><br>編集内容はまだ保存されません。予定時刻以降にもう一度この画面を開いてください。</div>`;
+    return sendHtml(res, 200, "最終確認", `<section class="card"><h1>公開前の最終確認</h1><div class="warn"><strong>${earlyTest ? "前倒しの実投稿テストです。この次のボタンで実際にXへ公開されます。" : due ? "編集後、この画面の公開ボタンで実際にXへ投稿されます。" : "いまは内容確認だけできます。"}</strong><br>投稿後は自動では削除できません。</div><dl class="meta"><dt>投稿先</dt><dd><strong>@aoba_day</strong></dd><dt>公開条件</dt><dd class="deadline">${esc(scheduleLabel(post))}${earlyTest ? "（前倒しテスト）" : due ? "" : "（まだ予定時刻前です）"}</dd><dt>カテゴリ</dt><dd>${esc(post.category || post.pillar)}</dd><dt>テーマ</dt><dd>${esc(post.pillar)}／${esc(post.title)}</dd><dt>目的</dt><dd>${esc(post.objective || "未設定")}</dd><dt>検証変数</dt><dd>${esc(post.testVariable || "未設定")}</dd><dt>画像</dt><dd>${Math.round(image.bytes / 1024)}KB・${esc(image.mediaType)}</dd><dt>AI表示</dt><dd>made_with_ai: true</dd></dl></section><section class="card"><img class="image" src="/image?id=${post.id}" alt="${esc(post.alt)}">${publishControls}<form method="get" action="/"><button class="secondary" type="submit">戻る</button></form></section>`);
   }
 
   if (req.method === "POST" && url.pathname === "/publish") {
@@ -236,7 +247,8 @@ async function handler(req, res) {
     approval = null;
     publishing = true;
     try {
-      const post = LAUNCH_POSTS.find((item) => item.id === current.postId);
+      const basePost = LAUNCH_POSTS.find((item) => item.id === current.postId);
+      const post = applyPostEdits(basePost, form.get("text"), form.get("alt"));
       const token = await ensureFreshAccessToken();
       if (tokenStatus(token).expired) throw new Error("Access Tokenの期限が切れました。更新してからやり直してください。");
       const record = await publishLaunchPost(token, post, imagePath(post));

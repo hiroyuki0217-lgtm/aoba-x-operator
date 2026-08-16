@@ -4,7 +4,7 @@ import { access } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { LAUNCH_POSTS } from "./launch-posts.mjs";
-import { canRequestPublication, isAllowedLocalRequest, isDue, localAppFile } from "./operator-server.mjs";
+import { applyPostEdits, canRequestPublication, isAllowedLocalRequest, isDue, localAppFile } from "./operator-server.mjs";
 import { batchRequestsForHandoff, buildRefreshedTokenRecord, createPost, inspectImage, metricValues, metricsSheetHandoff, postSheetHandoff, publicationBlocker, safeError, setAltText, sheetColumnIndex, tokenStatus, uploadImage, verifyTokenAccount } from "./x-api.mjs";
 
 const OAUTH_DIR = dirname(fileURLToPath(import.meta.url));
@@ -42,6 +42,18 @@ test("日時固定なしは本人承認後に公開でき、日時指定なら�
   assert.equal(isDue(scheduled, Date.parse("2026-08-17T20:30:00+09:00")), true);
   assert.equal(canRequestPublication(scheduled, Date.parse("2026-08-17T20:29:59+09:00"), false), false);
   assert.equal(canRequestPublication(scheduled, Date.parse("2026-08-17T20:29:59+09:00"), true), true);
+});
+
+test("最終プレビューの本文とALTを検証して投稿内容へ反映する", () => {
+  const post = LAUNCH_POSTS[1];
+  const edited = applyPostEdits(post, "  編集後の本文です。\n2行目です。  ", "  編集後のALTです。  ");
+  assert.equal(edited.text, "編集後の本文です。\n2行目です。");
+  assert.equal(edited.alt, "編集後のALTです。");
+  assert.equal(edited.id, post.id);
+  assert.throws(() => applyPostEdits(post, "", post.alt), /本文/);
+  assert.throws(() => applyPostEdits(post, "あ".repeat(281), post.alt), /280/);
+  assert.throws(() => applyPostEdits(post, post.text, ""), /ALT/);
+  assert.throws(() => applyPostEdits(post, post.text, "あ".repeat(1001)), /1000/);
 });
 
 test("Mac外や別Originからのローカル投稿操作を拒否する", () => {
