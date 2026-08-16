@@ -1,5 +1,5 @@
 const STORE_KEY = 'aoba-x-operator-v06';
-const APP_RELEASE = '2026-08-17 07:27 JST';
+const APP_RELEASE = '2026-08-17 08:05 JST';
 const LOCAL_OPERATOR_ORIGIN = 'http://127.0.0.1:3001';
 const isLocalOperator = location.protocol === 'http:' && location.port === '3001';
 const links = {
@@ -18,10 +18,10 @@ const categories = [
 ];
 
 const drafts = [
-  {id:'01',category:'reach',pillar:'休日',title:'パン屋さんの前で振り返る',image:'./assets/aoba/launch-01.jpg',objective:'タイムライン停止率とプロフィール遷移',hypothesis:'歩いている途中に撮影者へ振り返る動きと柔らかな笑顔は、正面セルフィーより自然な初見停止を作りやすい',variable:'撮影方式を腕を伸ばすセルフィーから撮影者を意識した非セルフィーへ変更',text:'パン屋さんの前で、もう一回呼ばれた。\n振り向いた瞬間、ちゃんと撮れてた？🌿',alt:'休日の街歩き中、パン屋で買った紙袋を抱え、撮影者へ柔らかく微笑む23歳のあおば。淡い色のトップスとロングスカートを身につけています。AI生成の架空キャラクターです。'},
-  {id:'02',category:'fan',pillar:'自宅',title:'ふわふわの部屋着に着替えた夜',image:'./assets/aoba/home-mirror-roomwear-approved-v01.png',objective:'返信率と再訪につながる親近感',hypothesis:'23歳らしい自然な目線と体の傾き、裾へ触れる途中動作を含む固定鏡セルフィーは、静止した正面ポーズより日常への親近感を作りやすい',variable:'自宅写真の撮影方式を第三者風から固定鏡セルフィーへ変更',text:'帰ってすぐ、ふわふわの部屋着に着替えました。\nこれだけで、ちょっと機嫌が戻る。\n今日はもう、ゆっくりします。',alt:'自宅の固定鏡の前で、淡いピンクと白のふわふわした上下セットの部屋着を着た23歳のあおば。スマートフォンを少し高く構え、片脚へ重心を置き、トップスの裾に触れながら自然に微笑んでいます。半袖トップスと半ズボンを着用し、裸足です。AI生成の架空キャラクターです。'},
-  {id:'03',category:'knowledge',pillar:'仕事',title:'入社1年目に知った、管理費と修繕積立金',image:'./assets/aoba/launch-03.jpg',objective:'保存的反応とフォロー理由の形成',hypothesis:'新人本人の発見から専門用語を生活語へ翻訳すると、初見でも役立つアカウントだと理解されやすい',variable:'冒頭を定義ではなく入社1年目の本人の発見から始める',source:'国土交通省「住まリテ｜住まいにはどんな費用がかかる？」',text:'入社1年目。\nこれ、働きはじめて初めて知ったんだけど。\n\nマンションの「管理費」は、廊下やエレベーターを毎日ちゃんと使えるようにするお金。\n「修繕積立金」は、将来の大きな修理のために、みんなで少しずつ貯めるお金です。\n\n似ているけど、役目は別なんです。',alt:'不動産会社のデスクで資料を開き、仕事中に撮影者へ柔らかく微笑む23歳のあおば。淡い色のブラウスを着ています。AI生成の架空キャラクターです。'},
-  {id:'04',category:'work',pillar:'仕事',title:'鍵を3回確認した朝',image:'./assets/aoba/work-camera-aware-approved-v01.png',objective:'新卒入社1年目の職業設定の理解とプロフィール遷移',hypothesis:'仕事ができすぎる姿より、忘れ物を気にする新人の小さな緊張を見せる方が、職業設定と人柄を同時に伝えやすい',variable:'仕事の成果ではなく出発前の新人らしい一動作を主題にする',text:'入社1年目。\n今日は初めて、一人で内見へ。\n心配で鍵をもう3回見ました。行ってきます。',alt:'4年制大学を卒業し、不動産会社へ新卒入社して1年目の23歳のあおば。初めて一人で内見へ向かう前、店舗で撮影者へ鍵を少し見せ、緊張と照れの混じった柔らかな笑顔を向けています。青灰色のアシンメトリーなノースリーブとアイボリーのAラインミディスカートを着ています。AI生成の架空キャラクターです。'}
+  {id:'01',category:'reach',pillar:'休日',title:'パン屋さんの前で振り返る',image:'./assets/aoba/weekend-bakery-aoba-v01-20260817.png',objective:'タイムライン停止率とプロフィール遷移',hypothesis:'歩いている途中に撮影者へ振り返る動きと柔らかな笑顔は、正面セルフィーより自然な初見停止を作りやすい',variable:'撮影方式を腕を伸ばすセルフィーから撮影者を意識した非セルフィーへ変更',text:'パン屋さんの前で、もう一回呼ばれた。\n振り向いた瞬間、ちゃんと撮れてた？🌿',alt:'休日の街歩き中、パン屋で買った紙袋を抱えて振り返り、撮影者へ柔らかく微笑む23歳のあおば。淡いブルーのミディワンピースと小さなブラウンのショルダーバッグを身につけています。AI生成の架空キャラクターです。'},
+  {id:'02',category:'fan',pillar:'自宅',title:'部屋着で洗濯物と格闘中',image:'./assets/aoba/home-laundry-aoba-v01-20260817.png',objective:'返信率と再訪につながる親近感',hypothesis:'飾らない部屋着と家事の途中に見せる明るい表情は、作り込んだポーズより日常への親近感を作りやすい',variable:'自宅写真を固定鏡から床座りの手持ちセルフィーへ変更',text:'たたみ始めたら、白い服ばっかりでした。\n部屋着のまま、あと少しだけやります。',alt:'自宅でソファを背に床へ座り、白い洗濯物をたたみながら手持ちインカメで撮影する23歳のあおば。セージグリーンのTシャツとアイボリーのルームパンツを着て、カメラへ柔らかく微笑んでいます。AI生成の架空キャラクターです。'},
+  {id:'03',category:'knowledge',pillar:'仕事',title:'入社1年目に知った、管理費と修繕積立金',image:'./assets/aoba/work-fees-aoba-v01-20260817.png',objective:'保存的反応とフォロー理由の形成',hypothesis:'新人本人の発見から専門用語を生活語へ翻訳すると、初見でも役立つアカウントだと理解されやすい',variable:'冒頭を定義ではなく入社1年目の本人の発見から始める',source:'国土交通省「住まリテ｜住まいにはどんな費用がかかる？」',text:'入社1年目。\nこれ、働きはじめて初めて知ったんだけど。\n\nマンションの「管理費」は、廊下やエレベーターを毎日ちゃんと使えるようにするお金。\n「修繕積立金」は、将来の大きな修理のために、みんなで少しずつ貯めるお金です。\n\n似ているけど、役目は別なんです。',alt:'不動産会社のデスクで物件の募集資料を開き、ペンを持って撮影者へ柔らかく微笑む23歳のあおば。ダスティブルーのアシンメトリーブラウスを着ています。AI生成の架空キャラクターです。'},
+  {id:'04',category:'work',pillar:'仕事',title:'鍵を3回確認した朝',image:'./assets/aoba/work-first-viewing-aoba-v01-20260817.png',objective:'新卒入社1年目の職業設定の理解とプロフィール遷移',hypothesis:'仕事ができすぎる姿より、忘れ物を気にする新人の小さな緊張を見せる方が、職業設定と人柄を同時に伝えやすい',variable:'仕事の成果ではなく出発前の新人らしい一動作を主題にする',text:'入社1年目。\n今日は初めて、一人で内見へ。\n心配で鍵をもう3回見ました。行ってきます。',alt:'初めて一人で内見へ向かう前、不動産会社の入口で鍵、物件ファイル、メジャーを持ち、撮影者へ少し緊張した柔らかな笑顔を向ける23歳のあおば。アイボリーのブラウスとくすんだブルーのミディスカートを着ています。AI生成の架空キャラクターです。'}
 ];
 
 // ぶら下がりは投稿ごとに判断する。不要な投稿は意図的に空欄のまま表示する。
@@ -31,9 +31,9 @@ for (const draft of drafts) draft.replyText = draft.id === '03'
 
 const defaultAssets = {
   face:'./assets/aoba/face-master-contact-triptych-v01.png',
-  work:'./assets/aoba/launch-03.jpg',
-  home:'./assets/aoba/home-mirror-roomwear-approved-v01.png',
-  weekend:'./assets/aoba/launch-01.jpg'
+  work:'./assets/aoba/work-fees-aoba-v01-20260817.png',
+  home:'./assets/aoba/home-laundry-aoba-v01-20260817.png',
+  weekend:'./assets/aoba/weekend-bakery-aoba-v01-20260817.png'
 };
 const defaultState = () => ({tab:'home',selected:'03',metrics:[],assets:{...defaultAssets},notice:''});
 const storedState = JSON.parse(localStorage.getItem(STORE_KEY) || 'null') || {};
