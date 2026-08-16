@@ -1,5 +1,5 @@
-const CACHE = 'aoba-v8';
-const ASSETS = ['./','./index.html','./style.css','./app.js','./manifest.webmanifest','./icon.svg'];
+const CACHE = 'aoba-v15-mobile-latest';
+const ASSETS = ['./','./index.html','./style.css','./operator.css','./app.js','./manifest.webmanifest','./icon.svg','./data/latest-state.json','./assets/aoba/face-master-contact-triptych-v01.png','./assets/aoba/profile-header.jpg','./assets/aoba/work-camera-aware-approved-v01.png','./assets/aoba/launch-01.jpg','./assets/aoba/launch-02.jpg','./assets/aoba/launch-03.jpg','./assets/aoba/launch-04.jpg','./assets/aoba/launch-05.jpg','./assets/aoba/launch-06.jpg','./assets/aoba/launch-07.jpg','./assets/aoba/launch-08.jpg','./assets/aoba/launch-09.jpg'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', event => event.respondWith(fetch(event.request).then(response => response).catch(() => caches.match(event.request))));

@@ -1,0 +1,67 @@
+.api-card {
+  border-color: #cfe3da;
+}
+
+.api-head {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.api-head h2 {
+  margin-top: 5px;
+}
+
+.api-card > p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.api-card dl {
+  display: grid;
+  font-size: 12px;
+  gap: 7px 10px;
+  grid-template-columns: 7.5em 1fr;
+  margin: 12px 0;
+}
+
+.api-card dt {
+  color: var(--muted);
+}
+
+.api-card dd {
+  font-weight: 750;
+  margin: 0;
+}
+
+.api-badge {
+  border-radius: 99px;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 6px 9px;
+  white-space: nowrap;
+}
+
+.api-badge.ready {
+  background: var(--mint);
+  color: var(--green);
+}
+
+.api-badge.standby {
+  background: var(--sky);
+  color: #32566e;
+}
+
+.api-badge.danger {
+  background: #f8dfdc;
+  color: #8f2f27;
+}
+
+.approval-note {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  margin: 9px 3px 0;
+}
