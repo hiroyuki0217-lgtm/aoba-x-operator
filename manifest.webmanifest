@@ -1,6 +1,8 @@
 {
   "name": "AOBA / X Operator",
   "short_name": "AOBA",
+  "id": "./",
+  "description": "キャラクターを固定し、マーケティング変数を1つずつ検証するAOBA X運用アプリ",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f6f4f0",

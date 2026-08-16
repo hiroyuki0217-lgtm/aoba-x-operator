@@ -1,0 +1,13 @@
+{
+  "name": "aoba-x-operator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test oauth/server.test.mjs oauth/operator.test.mjs oauth/operator-flow.integration.test.mjs",
+    "oauth": "node oauth/server.mjs",
+    "operator": "node oauth/operator-server.mjs",
+    "handoffs": "node oauth/sheet-handoff.mjs list",
+    "audit": "node oauth/audit.mjs",
+    "auth:maintain": "node oauth/auth-maintenance.mjs"
+  }
+}
