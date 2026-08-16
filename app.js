@@ -1,12 +1,12 @@
 const STORE_KEY = 'aoba-x-operator-v06';
-const APP_RELEASE = '2026-08-16 14:26 JST';
+const APP_RELEASE = '2026-08-16 15:55 JST';
 const LOCAL_OPERATOR_ORIGIN = 'http://127.0.0.1:3001';
-const isLocalOperator = location.origin === LOCAL_OPERATOR_ORIGIN;
+const isLocalOperator = location.protocol === 'http:' && location.port === '3001';
 const links = {
   canon: 'https://drive.google.com/file/d/1s9tM9W060GzpbriIaAxPwdsIa6Yh6VVE/view',
   drive: 'https://drive.google.com/drive/folders/1KDJOfjR0wxte2op2ZJVxKa7JX5JFOPKL',
   sheet: 'https://docs.google.com/spreadsheets/d/1d3vwBxZP5ng8ni-4m7HjZmUHv-8anG-vhfzFbI1kk1o/edit',
-  operator: isLocalOperator ? location.origin : `${LOCAL_OPERATOR_ORIGIN}/`
+  operator: isLocalOperator ? `${location.origin}/` : `${LOCAL_OPERATOR_ORIGIN}/`
 };
 let apiStatus = isLocalOperator ? {loading:true} : null;
 
@@ -23,6 +23,11 @@ const drafts = [
   {id:'03',category:'knowledge',pillar:'仕事',title:'入社1年目に知った、管理費と修繕積立金',image:'./assets/aoba/work-camera-aware-approved-v01.png',objective:'保存的反応とフォロー理由の形成',hypothesis:'新人本人の発見から専門用語を生活語へ翻訳すると、初見でも役立つアカウントだと理解されやすい',variable:'冒頭を定義ではなく入社1年目の本人の発見から始める',source:'国土交通省「住まリテ｜住まいにはどんな費用がかかる？」',text:'入社1年目。\nこれ、働きはじめて初めて知ったんだけど。\n\nマンションの「管理費」は、廊下やエレベーターを毎日ちゃんと使えるようにするお金。\n「修繕積立金」は、将来の大きな修理のために、みんなで少しずつ貯めるお金です。\n\n似ているけど、役目は別なんです。',alt:'新卒で不動産会社へ入社して1年目、店舗で撮影者へ柔らかく微笑みながら物件ファイルと鍵を見せる23歳のアオバ。青灰色のアシンメトリーなノースリーブとアイボリーのミディスカートを着ています。AI生成の架空キャラクターです。'},
   {id:'04',category:'work',pillar:'仕事',title:'鍵を3回確認した朝',image:'./assets/aoba/work-camera-aware-approved-v01.png',objective:'新卒入社1年目の職業設定の理解とプロフィール遷移',hypothesis:'仕事ができすぎる姿より、忘れ物を気にする新人の小さな緊張を見せる方が、職業設定と人柄を同時に伝えやすい',variable:'仕事の成果ではなく出発前の新人らしい一動作を主題にする',text:'入社1年目。\n今日は初めて、一人で内見へ。\n心配で鍵をもう3回見ました。行ってきます。',alt:'4年制大学を卒業し、不動産会社へ新卒入社して1年目の23歳のあおば。初めて一人で内見へ向かう前、店舗で撮影者へ鍵を少し見せ、緊張と照れの混じった柔らかな笑顔を向けています。青灰色のアシンメトリーなノースリーブとアイボリーのAラインミディスカートを着ています。AI生成の架空キャラクターです。'}
 ];
+
+// ぶら下がりは投稿ごとに判断する。不要な投稿は意図的に空欄のまま表示する。
+for (const draft of drafts) draft.replyText = draft.id === '03'
+  ? 'お部屋を探したとき、この2つの違いを知っていましたか？\n私は入社するまで、どちらも同じようなお金だと思っていました。'
+  : '';
 
 const defaultAssets = {
   face:'./assets/aoba/face-master-contact-triptych-v01.png',
@@ -41,15 +46,15 @@ const selectedDraft = () => drafts.find(item => item.id === state.selected) || d
 const previewUrl = draft => `${links.operator.replace(/\/$/,'')}/preview?post_id=${encodeURIComponent(draft.id)}`;
 
 function apiStatusCard() {
-  if (!isLocalOperator) return `<section class="card api-card"><div class="api-head"><div><p class="eyebrow">X API</p><h2>Macで安全に投稿</h2></div><span class="api-badge standby">Mac連携</span></div><p>公開版では投稿権限を持ちません。Macの「AOBA投稿.command」から開くと、同じWEBアプリ内でX APIへ進めます。</p><a class="secondary link" href="${links.operator}">Macの投稿画面を開く</a></section>`;
+  if (!isLocalOperator) return `<section class="card api-card"><div class="api-head"><div><p class="eyebrow">X API</p><h2>スマホで投稿予約</h2></div><span class="api-badge standby">Mac連携</span></div><p>Macと同じWi-Fiなら、本文・ALT・ぶら下がり・日時を編集して予約できます。Macの「AOBA投稿」画面に表示されるスマホ用URLをChromeで開き、初回だけ6桁コードを入力してください。</p><p class="approval-note">Mac名やXの秘密情報は公開版へ保存しません。</p></section>`;
   if (apiStatus?.loading) return `<section class="card api-card"><p class="eyebrow">X API</p><h2>接続を確認中…</h2></section>`;
   if (!apiStatus?.connected) return `<section class="card api-card"><div class="api-head"><div><p class="eyebrow">X API</p><h2>接続を確認できません</h2></div><span class="api-badge danger">要確認</span></div><p>${esc(apiStatus?.error || 'ローカル投稿機能を確認してください。')}</p><button class="secondary" data-refresh-api>再確認する</button></section>`;
   const badge = apiStatus.expired ? '<span class="api-badge danger">権限更新</span>' : '<span class="api-badge ready">接続済み</span>';
-  return `<section class="card api-card"><div class="api-head"><div><p class="eyebrow">X API</p><h2>${esc(apiStatus.account)} に接続</h2></div>${badge}</div><dl><dt>投稿権限</dt><dd>${apiStatus.expired?'更新が必要':'利用可能'}</dd><dt>Sheets反映待ち</dt><dd>${esc(apiStatus.pendingSheets)}件</dd><dt>投稿処理</dt><dd>${esc(apiStatus.operation || (apiStatus.publishing?'処理中':'未処理なし'))}</dd></dl>${apiStatus.expired?`<a class="primary link" href="${links.operator}">投稿権限を更新する</a>`:'<button class="secondary" data-refresh-api>状態を再確認</button>'}</section>`;
+  return `<section class="card api-card"><div class="api-head"><div><p class="eyebrow">X API</p><h2>${esc(apiStatus.account)} に接続</h2></div>${badge}</div><dl><dt>投稿権限</dt><dd>${apiStatus.expired?'更新が必要':'利用可能'}</dd><dt>予約中</dt><dd>${esc(apiStatus.scheduled || 0)}件</dd><dt>Sheets反映待ち</dt><dd>${esc(apiStatus.pendingSheets)}件</dd><dt>投稿処理</dt><dd>${esc(apiStatus.operation || (apiStatus.publishing?'処理中':'未処理なし'))}</dd></dl>${apiStatus.expired?`<a class="primary link" href="${links.operator}">投稿権限を更新する</a>`:'<button class="secondary" data-refresh-api>状態を再確認</button>'}</section>`;
 }
 
 function shell(title, subtitle, body) {
-  return `<header class="top"><div><p class="eyebrow">AOBA X OPERATOR · v06</p><h1>${esc(title)}</h1><p class="sub">${esc(subtitle)}</p><p class="release">最終更新 ${esc(APP_RELEASE)}</p></div><span class="status-dot" title="公開は必ず本人承認"></span></header>${body}${nav()}`;
+  return `<header class="top"><div><p class="eyebrow">AOBA X OPERATOR · v07</p><h1>${esc(title)}</h1><p class="sub">${esc(subtitle)}</p><p class="release">最終更新 ${esc(APP_RELEASE)}</p></div><span class="status-dot" title="公開は必ず本人承認"></span></header>${body}${nav()}`;
 }
 
 function home() {
@@ -67,7 +72,8 @@ function draftPage() {
   return shell('投稿前の確認','公開ではありません。ここで内容と検証条件を揃えます。',`
     <section class="draft-tabs">${drafts.map(item=>`<button class="${item.id===draft.id?'active':''}" data-draft="${item.id}">${item.id}<small>${esc(category(item).name)}</small></button>`).join('')}</section>
     <article class="card preview ${cat.color}"><img src="${draft.image}" alt="${esc(draft.alt)}"><div class="card-head"><span class="pill">${esc(cat.name)}</span><small>${esc(draft.pillar)}</small></div><h2>${esc(draft.title)}</h2><p class="post-copy">${esc(draft.text)}</p><details><summary>画像のALT</summary><p>${esc(draft.alt)}</p></details></article>
-    <section class="card experiment"><h2>この投稿で確かめること</h2><dl><dt>目的</dt><dd>${esc(draft.objective)}</dd><dt>仮説</dt><dd>${esc(draft.hypothesis)}</dd><dt>変えるのは1つ</dt><dd>${esc(draft.variable)}</dd>${draft.source?`<dt>事実確認</dt><dd>${esc(draft.source)}</dd>`:''}</dl><p class="safe">AI生成画像：API投稿時は <code>made_with_ai: true</code></p><button class="secondary" data-copy="text">本文をコピー</button><button class="secondary" data-copy="alt">ALTをコピー</button><a class="primary link" href="${previewUrl(draft)}">この案をX APIの最終確認へ</a><p class="approval-note">実際の公開には、次の画面で画像・本文・ALT・投稿先の確認と確認語の入力が必要です。</p></section>`);
+    <section class="card thread-card"><p class="eyebrow">THREAD</p><h2>ぶら下がり投稿</h2><div class="thread-field ${draft.replyText?'':'empty-field'}">${draft.replyText?esc(draft.replyText):'　'}</div><p class="approval-note">PVと返信率の仮説から必要な投稿だけ使います。空欄の場合は投稿しません。</p></section>
+    <section class="card experiment"><h2>この投稿で確かめること</h2><dl><dt>目的</dt><dd>${esc(draft.objective)}</dd><dt>仮説</dt><dd>${esc(draft.hypothesis)}</dd><dt>変えるのは1つ</dt><dd>${esc(draft.variable)}</dd>${draft.source?`<dt>事実確認</dt><dd>${esc(draft.source)}</dd>`:''}</dl><p class="safe">AI生成画像：API投稿時は <code>made_with_ai: true</code></p><button class="secondary" data-copy="text">本文をコピー</button><button class="secondary" data-copy="alt">ALTをコピー</button><a class="primary link" href="${previewUrl(draft)}">編集して投稿予約へ</a><p class="approval-note">Macと同じWi-Fiのスマホでは、次の画面で本文・ALT・ぶら下がり・日時を編集して予約できます。</p></section>`);
 }
 
 function measure() {

@@ -3,3 +3,6 @@ node_modules
 outputs/
 output/
 oauth/.secrets/
+/oauth/
+/docs/
+/package.json
