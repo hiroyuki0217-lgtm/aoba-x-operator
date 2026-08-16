@@ -12,6 +12,18 @@ const OAUTH_DIR = dirname(fileURLToPath(import.meta.url));
 test("v04の4カテゴリ実験キューは役割・仮説・本文・ALT・画像が揃う", async () => {
   assert.equal(LAUNCH_POSTS.length, 4);
   assert.deepEqual(LAUNCH_POSTS.map((post) => post.id), ["01", "02", "03", "04"]);
+  assert.deepEqual(LAUNCH_POSTS.map((post) => post.image), [
+    "../assets/aoba/weekend-bakery-aoba-v01-20260817.png",
+    "../assets/aoba/home-laundry-aoba-v01-20260817.png",
+    "../assets/aoba/work-fees-aoba-v01-20260817.png",
+    "../assets/aoba/work-first-viewing-aoba-v01-20260817.png",
+  ]);
+  assert.deepEqual(LAUNCH_POSTS.map((post) => post.text), [
+    "パン屋さんの前で、もう一回呼ばれた。\n振り向いた瞬間、ちゃんと撮れてた？🌿",
+    "たたみ始めたら、白い服ばっかりでした。\n部屋着のまま、あと少しだけやります。",
+    "入社1年目。\nこれ、働きはじめて初めて知ったんだけど。\n\nマンションの「管理費」は、廊下やエレベーターを毎日ちゃんと使えるようにするお金。\n「修繕積立金」は、将来の大きな修理のために、みんなで少しずつ貯めるお金です。\n\n似ているけど、役目は別なんです。",
+    "入社1年目。\n今日は初めて、一人で内見へ。\n心配で鍵をもう3回見ました。行ってきます。",
+  ]);
   assert.deepEqual(new Set(LAUNCH_POSTS.map((post) => post.category)), new Set(["PV入口型", "親近感・ファン化型", "超やさしい不動産知識型", "仕事のリアル型"]));
   for (const post of LAUNCH_POSTS) {
     assert.equal(post.scheduledAt, null);
